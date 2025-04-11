@@ -85,8 +85,7 @@ def receive_data():
             'message': f'An error occurred: {str(e)}'
         }
         return jsonify(response), 500
-
-# if __name__ == '__main__':
-#     print("Flask application is running...")
-#     print("Outing suggestion API available at: http://localhost:5000/api/data")
-#     app.run(debug=True, host='0.0.0.0', port=5000)
+if __name__ == '__main__':
+    print("Flask application is running...")
+    print("Outing suggestion API available at: http://localhost:5000/api/data")
+    app.run(debug=True, host='0.0.0.0', port=5000)
