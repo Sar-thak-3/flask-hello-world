@@ -194,7 +194,7 @@ def generate_outing_suggestion(
         dict: An outing suggestion with stops and related information
     """
     # If location not provided, get it from IP
-    if city is None or region is None or country is None or lat is None or lon is None:
+    if lat is None or lon is None:
         city, region, country, lat, lon = get_approximate_location_from_ip()
         print(f"Location details: {city}, {region}, {country}, {lat}, {lon}")
     
