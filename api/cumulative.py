@@ -161,8 +161,6 @@ def generate_outing_suggestion(
     number_of_people,
     type_of_people,
     hours_available,
-    max_travel_time,
-    transport_mode,
     budget,
     city=None,
     region=None,
@@ -209,8 +207,7 @@ def generate_outing_suggestion(
     # Get outing suggestion
     suggestion = get_outing_suggestion_gemini_schema(
         city, mood, purpose, time_of_day, weather, 
-        number_of_people, type_of_people, hours_available, 
-        max_travel_time, transport_mode, budget
+        number_of_people, type_of_people, hours_available, budget
     )
 
     results = {}
@@ -242,7 +239,8 @@ def generate_outing_suggestion(
                     "review_count": place['review_count'],
                     "latitude": place.get('latitude'),
                     "longitude": place.get('longitude'),
-                    "distance": distance
+                    "distance": distance,
+                    "vibe": stop.vibe_title
                 }
                 
                 stop_info["places"].append(place_info)
