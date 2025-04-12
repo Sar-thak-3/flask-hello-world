@@ -1,8 +1,10 @@
 from flask import Flask, jsonify, request
 import traceback
 from cumulative import generate_outing_suggestion
+from flask_cors import CORS
 
 app = Flask(__name__)
+CORS(app)
 
 @app.route('/api/data', methods=['POST'])
 def receive_data():
