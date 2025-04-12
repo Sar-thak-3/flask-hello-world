@@ -59,42 +59,43 @@ def create_weather_text(weather_conditions):
   
 def find_best_places(places, top_n=4):
     """
-    Ranks places based on a weighted combination of rating and review count.
+    Ranks places based on a weighted combination of rating and review count,
+    and ensures 'latitude' and 'longitude' are present.
 
     Args:
         places (list): A list of dictionaries, where each dictionary represents a place
-                       and contains 'name', 'rating', and 'review_count' keys.
+                       and contains 'name', 'rating', and 'review_count' keys, and
+                       should also contain 'latitude' and 'longitude'.
         top_n (int): The number of top places to return.
 
     Returns:
-        list: A list of the top_n places, sorted by the ranking score in descending order.
+        list: A list of the top_n places, sorted by the ranking score in descending order,
+              excluding places without valid latitude and longitude.
     """
-    if not places:
+    valid_places = [place for place in places if place.get('latitude') is not None and place.get('longitude') is not None]
+
+    if not valid_places:
         return []
 
     ranked_places = []
-    for place in places:
+    for place in valid_places:
         rating = place.get('rating', 0.0)
         review_count = place.get('review_count', 0)
 
-        # Simple weighted score: (normalized rating) * weight_rating + (normalized review_count) * weight_reviews
-        # Normalizing helps to put both metrics on a similar scale (0 to 1)
-        max_rating = 5.0  # Assuming max rating is 5
-        max_review_count = max(p.get('review_count', 0) for p in places) if places else 1 # Avoid division by zero
+        max_rating = 5.0
+        max_review_count = max(p.get('review_count', 0) for p in valid_places) if valid_places else 1
 
         normalized_rating = rating / max_rating if max_rating > 0 else 0
         normalized_review_count = review_count / max_review_count if max_review_count > 0 else 0
 
-        # You can adjust these weights based on how much importance you give to each factor
         weight_rating = 0.7
         weight_reviews = 0.3
 
         score = (normalized_rating * weight_rating) + (normalized_review_count * weight_reviews)
-        ranked_place = place.copy()  # Start with a copy of the 'place' dictionary
-        ranked_place['score'] = score  # Add the 'score'
+        ranked_place = place.copy()
+        ranked_place['score'] = score
         ranked_places.append(ranked_place)
 
-    # Sort places by the calculated score in descending order
     ranked_places.sort(key=lambda item: item['score'], reverse=True)
 
     return ranked_places[:top_n]
