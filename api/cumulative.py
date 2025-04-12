@@ -213,15 +213,11 @@ def generate_outing_suggestion(
 
     results = {}
     if suggestion.stops:
-        all_categories = []
+        # all_categories = []
         stops_info = []
         
         for i, stop in enumerate(suggestion.stops):
-            stop_info = {
-                "vibe_title": stop.vibe_title,
-                "search_phrase": stop.search_phrase,
-                "places": []
-            }
+            stop_info = []
             
             print(f"{i+1}. **{stop.vibe_title}** – _Search: \"{stop.search_phrase}\"_")
             place_results = text_search_places(
@@ -244,7 +240,7 @@ def generate_outing_suggestion(
                     "vibe": stop.vibe_title
                 }
                 
-                stop_info["places"].append(place_info)
+                stop_info.append(place_info)
                 
                 print(f"{j}. {place['name']} ({place['rating']}⭐)")
                 print(f"   Address: {place['address']}")
@@ -255,9 +251,9 @@ def generate_outing_suggestion(
                 print(f"   Distance b/w locations: {distance} km")
             
             stops_info.append(stop_info)
-            all_categories.append(final_results)
+            # all_categories.append(stops_info)
         
-        best_combination, min_total_distance, max_avg_rating = find_best_itinerary_multiple_categories(all_categories)
+        best_combination, min_total_distance, max_avg_rating = find_best_itinerary_multiple_categories(stops_info)
         
         # results = {
         #     "suggestion": suggestion,
