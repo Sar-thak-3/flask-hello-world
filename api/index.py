@@ -1,10 +1,8 @@
 from flask import Flask, jsonify, request
 import traceback
 from cumulative import generate_outing_suggestion
-from flask_cors import CORS
 
 app = Flask(__name__)
-CORS(app)
 
 @app.route('/api/data', methods=['POST'])
 def receive_data():
@@ -22,8 +20,7 @@ def receive_data():
         "type_of_people": string,
         "hours_available": float,
         "max_travel_time": integer,
-        "transport_mode": string,
-        "budget": float,
+        "budget": string,
         "city": string (optional),
         "region": string (optional),
         "country": string (optional),
@@ -48,7 +45,7 @@ def receive_data():
         # Check if required fields are present
         required_fields = ['mood', 'purpose', 'time_of_day', 'number_of_people', 
                           'type_of_people', 'hours_available', 'max_travel_time', 
-                          'transport_mode', 'budget']
+                          'budget']
         
         missing_fields = [field for field in required_fields if field not in request_data]
         
@@ -87,6 +84,7 @@ def receive_data():
             'message': f'An error occurred: {str(e)}'
         }
         return jsonify(response), 500
+
 if __name__ == '__main__':
     print("Flask application is running...")
     print("Outing suggestion API available at: http://localhost:5000/api/data")
