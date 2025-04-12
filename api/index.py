@@ -19,7 +19,6 @@ def receive_data():
         "number_of_people": integer,
         "type_of_people": string,
         "hours_available": float,
-        "max_travel_time": integer,
         "budget": string,
         "city": string (optional),
         "region": string (optional),
@@ -44,7 +43,7 @@ def receive_data():
         
         # Check if required fields are present
         required_fields = ['mood', 'purpose', 'time_of_day', 'number_of_people', 
-                          'type_of_people', 'hours_available', 'max_travel_time', 
+                          'type_of_people', 'hours_available', 
                           'budget']
         
         missing_fields = [field for field in required_fields if field not in request_data]
