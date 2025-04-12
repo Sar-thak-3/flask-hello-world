@@ -19,7 +19,7 @@ class OutingSuggestion(BaseModel):
             raise ValueError("Number of stops must be 2 or 3 if provided.")
         return v
 
-def get_outing_suggestion_gemini_schema(city, mood, purpose, time_of_day, weather, number_of_people, type_of_people, hours_available, max_travel_time, transport_mode, budget) -> OutingSuggestion:
+def get_outing_suggestion_gemini_schema(city, mood, purpose, time_of_day, weather, number_of_people, type_of_people, hours_available, budget) -> OutingSuggestion:
     """
     Generates a 2 or 3-stop outing plan using the Gemini API and returns it as a Pydantic schema.
 
@@ -56,8 +56,6 @@ Use the following context:
 - Weather: {weather}
 - Number of people: {number_of_people} ({type_of_people})
 - Total time available: {hours_available} hours
-- Max travel per stop: {max_travel_time} minutes
-- Mode of movement: {transport_mode} (e.g., walking, car, bike)
 - Budget: ₹{budget} per person
 
 ---
@@ -70,6 +68,8 @@ Use the following context:
 - Reflect the energy curve in the order (e.g., calm → active → chill again), but adapt based on mood/purpose
 - Return your response as a valid JSON object with a key "stops" which is a list of dictionaries.
 - Each dictionary in the "stops" list should have two keys: "vibe_title" and "search_phrase".
+- Consider max travel per stop to be around 20 minutes for ease of travel.
+- Consider mode of travel to be car
 """
 
     response = model.generate_content(prompt)
