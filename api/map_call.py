@@ -81,7 +81,8 @@ def text_search_places(query, api_key, location=None, radius=5000, max_results=5
             "place_id": place.get("place_id"),
             "review_count": place.get("user_ratings_total"),
             "latitude": place.get("geometry").get("location").get("lat"),
-            "longitude": place.get("geometry").get("location").get("lng")
+            "longitude": place.get("geometry").get("location").get("lng"),
+            "photo_ref": place.get("photos", [{}])[0].get("photo_reference")
         })
 
     return results

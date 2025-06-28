@@ -237,7 +237,8 @@ def generate_outing_suggestion(
                     "latitude": place.get('latitude'),
                     "longitude": place.get('longitude'),
                     "distance": distance,
-                    "vibe": stop.vibe_title
+                    "vibe": stop.vibe_title,
+                    "photo_ref": place.get('photo_ref')
                 }
                 
                 stop_info.append(place_info)
