@@ -2,8 +2,12 @@ from gpt_call_1 import OutingSuggestion, get_outing_suggestion_gemini_schema
 from map_call import text_search_places
 from current_location import get_approximate_location_from_ip
 from weather import get_weather_condition
+import os
+from dotenv import load_dotenv
 
-API_KEY = "AIzaSyD71vUXnxhniEodZmfGxfbEIiDTexyKCjc"
+load_dotenv()
+
+API_KEY = os.getenv("API_KEY")
 WEATHER_API_KEY = "b0f411cd84d24d57bf170954251104"
 
 import math

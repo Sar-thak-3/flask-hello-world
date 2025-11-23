@@ -87,7 +87,6 @@ def text_search_places(query, api_key, location=None, radius=5000, max_results=5
 
     return results
 
-# API_KEY = "AIzaSyD71vUXnxhniEodZmfGxfbEIiDTexyKCjc"
 
 # # Search with location (e.g., for 'pizza' near NYC)
 # results = text_search_places("bowling alleys near me Andheri West", API_KEY, location=(13.0878, 80.2785))

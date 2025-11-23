@@ -1,9 +1,13 @@
 import requests
 import json
 import googlemaps
+import os
+from dotenv import load_dotenv
+
+load_dotenv()
 
 # Replace with your Google Maps API key
-GOOGLE_MAPS_API_KEY = "AIzaSyD71vUXnxhniEodZmfGxfbEIiDTexyKCjc"
+GOOGLE_MAPS_API_KEY = os.getenv("API_KEY")
 
 def get_approximate_location_from_ip():
     """Gets an approximate location based on the public IP address."""
