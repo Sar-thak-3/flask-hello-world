@@ -206,6 +206,7 @@ def generate_outing_suggestion(
     if weather_conditions is None:
         weather_conditions = get_weather_condition(lat, lon, WEATHER_API_KEY)
     
+    print(f"Weather coonditions: {weather_conditions}")
     # Create weather text
     weather = create_weather_text(weather_conditions=weather_conditions)
 
