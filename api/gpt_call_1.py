@@ -19,36 +19,20 @@ class OutingSuggestion(BaseModel):
             raise ValueError("Number of stops must be 2 or 3 if provided.")
         return v
 
-def get_outing_suggestion_gemini_schema(city, mood, purpose, time_of_day, weather, number_of_people, type_of_people, hours_available, budget) -> OutingSuggestion:
-    """
-    Generates a 2 or 3-stop outing plan using the Gemini API and returns it as a Pydantic schema.
+def get_outing_suggestion_gemini_schema(
+    city, mood, purpose, time_of_day, weather, number_of_people,
+    type_of_people, hours_available, budget
+) -> OutingSuggestion:
 
-    Args:
-        city (str): The city for the outing.
-        mood (str): The desired mood of the outing.
-        purpose (str): The purpose of the outing.
-        time_of_day (str): The current time of day.
-        weather (str): The current weather conditions.
-        number_of_people (int): The number of people in the group.
-        type_of_people (str): The type of people in the group (e.g., adults, family with young kids).
-        hours_available (float): The total time available for the outing in hours.
-        max_travel_time (int): The maximum travel time between stops in minutes.
-        transport_mode (str): The mode of transportation (e.g., walking, car, bike).
-        budget (int): The budget per person in INR.
-
-    Returns:
-        OutingSuggestion: A Pydantic model containing the outing suggestions.
-    """
     genai.configure(api_key="AIzaSyCKk3jAhH6P2Jx2csQVT8zR2FpTXXB0U5k")
-    model = genai.GenerativeModel('gemini-1.5-flash')
 
     prompt = f"""
 You are a cultural concierge for young travelers and families.
 
-Your job is to suggest a short, realistic 2- or 3-stop outing plan based on the user's context. The outing should feel smooth, spontaneous, and enjoyable — like something they could actually do today.
+Your task is to suggest a short, realistic 2- or 3-stop outing plan. 
+The outing should feel smooth, spontaneous, and enjoyable — like something they could actually do today.
 
-Use the following context:
-
+Context:
 - City: {city}
 - Mood: {mood}
 - Purpose: {purpose}
@@ -58,41 +42,39 @@ Use the following context:
 - Total time available: {hours_available} hours
 - Budget: ₹{budget} per person
 
----
-
-**Instructions:**
-- If time is short (under 2.5 hours), suggest **2 stops** instead of 3
-- Suggest only **categories or types of places**, not specific names or areas
-- Avoid place types that are rare or uncommon in the given city
-- Ensure that all stops feel logically connected and could realistically exist **within a shared zone** (walkable or short drive)
-- Reflect the energy curve in the order (e.g., calm → active → chill again), but adapt based on mood/purpose
-- Return your response as a valid JSON object with a key "stops" which is a list of dictionaries.
-- Each dictionary in the "stops" list should have two keys: "vibe_title" and "search_phrase".
-- Consider max travel per stop to be around 20 minutes for ease of travel.
-- Consider mode of travel to be car
+Instructions:
+- If time is under 2.5 hours, suggest 2 stops, otherwise 3
+- Suggest only categories/types of places, not specific names
+- Avoid rare/uncommon place types
+- Ensure all stops are logically connected (walkable or short drive)
+- Follow an energy curve (e.g., calm → active → chill), adapt to mood/purpose
+- Max travel per stop: 20 minutes by car
+- **Output ONLY a valid JSON object** with key "stops" as a list of {"vibe_title", "search_phrase"} dictionaries
 """
 
-    response = model.generate_content(prompt)
-    raw_output = response.text.strip()
+    try:
+        response = genai.generate_text(
+            model="models/gemini-2.5-flash",
+            prompt=prompt,
+            temperature=0.7,
+            max_output_tokens=10000
+        )
 
-    # Remove any surrounding text that might interfere with JSON parsing
-    json_string = re.search(r"\{.*\}", raw_output, re.DOTALL)
-    if json_string:
-        json_string = json_string.group(0)
-        try:
-            output_json = json.loads(json_string)
+        raw_output = response.output_text.strip()
+
+        # Extract JSON from the output
+        json_string = re.search(r"\{.*\}", raw_output, re.DOTALL)
+        if json_string:
+            output_json = json.loads(json_string.group(0))
             return OutingSuggestion(**output_json)
-        except json.JSONDecodeError as e:
-            print(f"Error decoding JSON: {e}")
-            print(f"Raw response (cleaned): {json_string}")
+        else:
+            print(f"No JSON found in model output: {raw_output}")
             return OutingSuggestion(stops=None)
-        except Exception as e:
-            print(f"Error creating Pydantic model: {e}")
-            print(f"Raw response (cleaned): {json_string}")
-            return OutingSuggestion(stops=None)
-    else:
-        print(f"Could not find JSON object in the response: {raw_output}")
+
+    except Exception as e:
+        print(f"Error generating outing suggestion: {e}")
         return OutingSuggestion(stops=None)
+
 
 # if __name__ == '__main__':
 #     city = "Chennai"
